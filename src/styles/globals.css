@@ -14,3 +14,18 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.upper-container {
+  height: 100vh;
+  width: calc(100vw -10px);
+}
+
+.upper-container div {
+  padding: 5px;
+  border: 1px solid black;
+  height: fit-content;
+}
+
+.upper-container tr {
+  border: 1px solid black;
+}
