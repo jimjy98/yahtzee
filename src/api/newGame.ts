@@ -4,7 +4,8 @@ import firebase from "firebase";
 const db = firebase.firestore();
 
 // create that shit
-async function createNewGame(game: Game) {
+export default async function createNewGame(game: Game) {
+
   const gameDoc = {
     title: game,
     date: game.date.toISOString(),
@@ -14,8 +15,9 @@ async function createNewGame(game: Game) {
   };
 
   try {
-    await db.collection("games").add(gameDoc);
-    console.log("Game created successfully!");
+    const docId = await db.collection("games").add(gameDoc);
+    console.log("Game created successfully! Game id: " + docId);
+    return docId;
   } catch (err) {
     console.error(err);
   }
@@ -47,4 +49,22 @@ async function updateGameData(
   } catch (err) {
     console.error(err);
   }
+}
+
+// get dem players
+export default async function getUsers(id: string) {
+  var gameDoc = await db.collection('games').doc(id);
+  var users: string[] = [];
+  gameDoc.get().then(doc => {
+    if (doc.exists) {
+      console.log("Document data:", doc.data());
+      users = doc.data()?.users;
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }).catch((err) => {
+    console.error(err);
+  })
+  return users;
 }

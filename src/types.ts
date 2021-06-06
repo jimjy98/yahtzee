@@ -16,7 +16,7 @@ export interface Scores {
 
 export interface Game {
   title: string;
-  date: Date;
+  date: string;
   description: string;
   scores: Scores;
   users: string[];
