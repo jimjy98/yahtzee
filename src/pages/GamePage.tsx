@@ -1,18 +1,20 @@
 import "tailwindcss/tailwind.css";
-import getUsers from 'api/newGame';
+import {getUsers} from 'api/newGame';
 
 export interface Props {
   gameId: string,
 }
 
-export default function LowerSection(props: Props) {
+export default function GamePage(props: Props) {
   
   const generateUserColumns = (gameId: string) => {
-    var users = getUsers(gameId);
     var columns = ``;
-    users.forEach(u => {
-      columns += `<th>` + u + `</th>`;
-    });
+    getUsers(gameId).then((users: string[]) => {
+      users.forEach(u => {
+        columns += `<th>` + u + `</th>`;
+      });
+    })
+    // var users = getUsers(gameId);
     return columns;
   }
 

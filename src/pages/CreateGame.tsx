@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import Chip from '@material-ui/core/Chip';
-import { Game, Scores } from 'types';
+import { Game } from 'types';
 
 // import firebase from "firebase";
 // const db = firebase.firestore();
 
-import createNewGame from "../api/newGame";
+import {createNewGame} from "../api/newGame";
 
-export default function Home() {    
+export default function CreateGame() {    
 
   const [users, setUsers] = useState<string[]>([]);
   const [inputUsers, setInputUsers] = useState<string>('');
@@ -20,12 +20,31 @@ export default function Home() {
       title: title,
       description: description,
       date: Date.now().toString(),
-      scores: {}, 
+      scores: {
+        aces: {},
+        twos: {},
+        threes: {},
+        fours: {},
+        fives: {},
+        sixes: {},
+        threeOfAKind: {},
+        fourOfAKind: {},
+        fullHouse: {},
+        shortStraight: {},
+        longStraight: {},
+        yahtzee: {},
+        chance: {},
+      }, 
       users: users
     };
     
-    var gameId = createNewGame(game);
-    setGameId(gameId);
+  
+      createNewGame(game).then((docId) => {
+        if (docId) {
+          setGameId(docId);
+        }
+      })
+    
     // pass gameid to next page
     // routing
   }
@@ -66,7 +85,7 @@ export default function Home() {
       return <Chip label={user} onDelete={() => handleDelete(user)}/>;
     })}
     <fieldset>
-      <button name="submit" type="submit" id="contact-submit" data-submit="...Sending" onClick={createNewGame}>Create Game</button>
+      <button name="submit" type="submit" id="contact-submit" data-submit="...Sending" onClick={handleCreateGame}>Create Game</button>
     </fieldset>
   </form>
 </div>  
