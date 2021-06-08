@@ -1,13 +1,12 @@
 import { Game } from "types";
-import firebase from "firebase";
+import {db} from 'pages/index';
 
-const db = firebase.firestore();
 
 // create that shit
 export async function createNewGame(game: Game) {
 
   const gameDoc = {
-    title: game,
+    title: game.title,
     date: game.date,
     description: game.description,
     users: game.users,
@@ -24,7 +23,7 @@ export async function createNewGame(game: Game) {
 }
 
 // reading data for live shit
-async function getGame(id: string, onSnapshot: (game: Game) => void) {
+export async function getGame(id: string, onSnapshot: (game: Game) => void) {
   db.collection("games")
     .doc(id)
     .onSnapshot((doc) => {
@@ -34,7 +33,7 @@ async function getGame(id: string, onSnapshot: (game: Game) => void) {
 }
 
 // update that shit
-async function updateGameData(
+export async function updateGameData(
   id: string,
   updatedGame: Game
 ): Promise<Game | void> {
@@ -49,22 +48,4 @@ async function updateGameData(
   } catch (err) {
     console.error(err);
   }
-}
-
-// get dem players
-export async function getUsers(id: string) {
-  var gameDoc = await db.collection('games').doc(id);
-  var users: string[] = [];
-  gameDoc.get().then(doc => {
-    if (doc.exists) {
-      console.log("Document data:", doc.data());
-      users = doc.data()?.users;
-    } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
-    }
-  }).catch((err) => {
-    console.error(err);
-  })
-  return users;
 }
