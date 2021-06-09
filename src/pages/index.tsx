@@ -130,7 +130,7 @@ export default function NewGame() {
             ))}
           </Box>
           
-          <Button className={classes.createGame} variant="contained" color="primary">
+          <Button onClick={handleCreateGame} className={classes.createGame} variant="contained" color="primary">
             Create Game
           </Button>
       </Paper>

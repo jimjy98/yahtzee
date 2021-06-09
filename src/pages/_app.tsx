@@ -1,4 +1,4 @@
-import "../styles.css";
+// import "../styles.css";
 import type { AppProps } from "next/app";
 import { initializeFirebase } from 'api/init';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
