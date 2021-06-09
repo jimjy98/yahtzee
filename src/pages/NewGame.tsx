@@ -86,7 +86,6 @@ export default function NewGame() {
         <input
           id="addUser"
           placeholder="Users"
-          type="tel"
           tabIndex={3}
           value={inputUsers}
           onChange={(e) => setInputUsers(e.target.value)}

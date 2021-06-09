@@ -7,7 +7,7 @@ export default function InputCell({ value, setValue }: Props) {
   
   return (
     <td>
-      <input value={value} onChange={setValue} />
+      <input type="tel" value={value} onChange={setValue} />
     </td>
   );
 }
