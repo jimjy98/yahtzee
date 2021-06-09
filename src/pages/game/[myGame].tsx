@@ -3,7 +3,7 @@ import { getGame, updateGameData } from "api/newGame";
 import { useRouter } from "next/router";
 import { Game as GameType } from "types";
 
-import { Paper } from "@material-ui/core";
+import { Paper, Typography, Divider } from "@material-ui/core";
 import InputCell from "components/InputCell";
 import { rowGuides } from "api/guide";
 
@@ -16,19 +16,21 @@ export default function Game() {
 
   useEffect(() => {
     if (!myGame) return;
+
     const tempGame = getGame(myGame as string, (data) => {
       setGame(data);
-      if (users) {
-        setUsers(data.users);
-      }
+      users && setUsers(data.users);
     });
   }, [myGame]);
 
   return (
-    <Paper elevation={2}>
-      <h1 className="yahtzee__heading">Yahtzee</h1>
-      <h2> {game?.title || 'Game'} </h2>
-      <h3> {game?.description || 'Description'} </h3>
+    <Paper style={{ padding: 24 }}>
+      <Typography variant="h3">Yahtzee</Typography>
+      <Typography variant="h6"> {game?.title || 'Game'}</Typography>
+      <Typography variant="h6"> {game?.description || 'Description'} </Typography>
+
+      <Divider style={{ margin: '24px 0' }} />
+
       <div className="yahtzee__score-card">
         <table>
           <tbody className="upper">
