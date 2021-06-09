@@ -1,10 +1,9 @@
 import { Game } from "types";
-import {db} from 'pages/index';
+import { getDb } from 'api/init';
 
+const db = getDb();
 
-// create that shit
 export async function createNewGame(game: Game) {
-
   const gameDoc = {
     title: game.title,
     date: game.date,
@@ -15,14 +14,12 @@ export async function createNewGame(game: Game) {
 
   try {
     const docId = await db.collection("games").add(gameDoc);
-    console.log("Game created successfully! Game id: " + docId);
     return docId.id;
   } catch (err) {
     console.error(err);
   }
 }
 
-// reading data for live shit
 export async function getGame(id: string, onSnapshot: (game: Game) => void) {
   db.collection("games")
     .doc(id)
@@ -32,7 +29,6 @@ export async function getGame(id: string, onSnapshot: (game: Game) => void) {
     });
 }
 
-// update that shit
 export async function updateGameData(
   id: string,
   updatedGame: Game
@@ -42,8 +38,6 @@ export async function updateGameData(
     await gameDocToUpdate.update({
       scores: updatedGame.scores,
     });
-
-    console.log("Game updated");
     return updatedGame;
   } catch (err) {
     console.error(err);

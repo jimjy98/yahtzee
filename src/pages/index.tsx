@@ -1,37 +1,139 @@
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
-import firebase from 'firebase';
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import {
+  Chip,
+  TextField,
+  Typography,
+  Button,
+  Paper,
+  Box,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { Game } from "types";
+import { createNewGame } from "api/newGame";
 
-import NewGame from "pages/NewGame";
-
-import 'font-awesome/css/font-awesome.min.css';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDP20MLf7b1LH8QASkzOTlXQvCaDEp5ZnA",
-  authDomain: "yahtzee-1f753.firebaseapp.com",
-  databaseURL: "https://yahtzee-1f753-default-rtdb.firebaseio.com",
-  projectId: "yahtzee-1f753",
-  storageBucket: "yahtzee-1f753.appspot.com",
-  messagingSenderId: "111541933062",
-  appId: "1:111541933062:web:134c31df977d3c045f9f87",
-  measurementId: "G-VY7R6423XJ",
-};
-
-try {
-  firebase.initializeApp(firebaseConfig);
-} catch (err) {
-  if (!/already exists/.test(err.message)) {
-    console.error("Firebase initialization error", err.stack);
+const useStyles = makeStyles(theme => ({
+  background: {
+    backgroundColor: theme.palette.background.default,
+    height: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  paper: {
+    padding: 24,
+    width: '60%',
+  },
+  input: {
+    margin: '4px 0',
+  },
+  createGame: {
+    display: 'block',
+    float: 'right',
+    marginTop: 8
   }
-}
-export const db = firebase.firestore();
+}));
 
-export default function Home() {
-  
+export default function NewGame() {
+
+  const [users, setUsers] = useState<string[]>([]);
+  const [inputUsers, setInputUsers] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+
+  const router = useRouter();
+  const classes = useStyles();
+
+  const handleCreateGame = () => {
+    const game: Game = {
+      title: title,
+      description: description,
+      date: Date.now().toString(),
+      scores: {
+        aces: {},
+        twos: {},
+        threes: {},
+        fours: {},
+        fives: {},
+        sixes: {},
+        threeOfAKind: {},
+        fourOfAKind: {},
+        fullHouse: {},
+        shortStraight: {},
+        longStraight: {},
+        yahtzee: {},
+        chance: {},
+      },
+      users: users,
+    };
+
+    createNewGame(game).then((docId) =>
+      docId ? router.push(`/game/${docId}`) : null
+    );
+  };
+
+  const deleteUser = (clickedUser: string) => {
+    const newUsers = users.filter((user) => user !== clickedUser);
+    setUsers(newUsers);
+  }
+
+  const onKeyUp = (e: any) => {
+    if (e.key === " " && e.target.value.length) {
+      setUsers([...users, e.target.value]);
+      setInputUsers("");
+    }
+  }
+
   return (
-    <div className="container">
-      <NewGame />
-    </div>
+    <Box className={classes.background}>
+      <Paper className={classes.paper} elevation={2}>
+          <Typography variant="h5">Create a new game</Typography>
+          <Typography color="textSecondary" variant="body2">
+            Fill the following fields game share the url with your friends
+          </Typography>
+
+          <br />
+
+          <TextField
+            className={classes.input}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            variant="outlined"
+            placeholder="Ex: your current location"
+            label="Title"
+            autoFocus
+            fullWidth
+          />
+          <TextField
+            className={classes.input}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            variant="outlined"
+            fullWidth
+            label="Description"
+            placeholder="Ex: something memorable that happened"
+          />
+          <TextField
+            className={classes.input}
+            value={inputUsers}
+            onChange={(e) => setInputUsers(e.target.value)}
+            variant="outlined"
+            label="Users"
+            fullWidth
+            placeholder="Press space to add user"
+            onKeyUp={onKeyUp}
+          />
+
+          <Box>
+            {users.map((user: string) => (
+              <Chip label={user} onDelete={() => deleteUser(user)} />
+            ))}
+          </Box>
+          
+          <Button className={classes.createGame} variant="contained" color="primary">
+            Create Game
+          </Button>
+      </Paper>
+    </Box>
   );
 }
