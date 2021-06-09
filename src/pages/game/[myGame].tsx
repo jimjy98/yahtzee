@@ -26,48 +26,46 @@ export default function Game() {
 
   return (
     <Paper elevation={2}>
-      <div className="yahtzee">
-        <h1 className="yahtzee__heading">Yahtzee</h1>
-        <h2> {game?.title} </h2>
-        <h3> {game?.description} </h3>
-        <div className="yahtzee__score-card">
-          <table>
-            <tbody className="upper">
-              <tr className="head">
-                <th>Upper Section</th>
-                <th>How to Score</th>
-                {users?.map((u) => (
-                  <th key={u}>{u}</th>
+      <h1 className="yahtzee__heading">Yahtzee</h1>
+      <h2> {game?.title || 'Game'} </h2>
+      <h3> {game?.description || 'Description'} </h3>
+      <div className="yahtzee__score-card">
+        <table>
+          <tbody className="upper">
+            <tr className="head">
+              <th>Upper Section</th>
+              <th>How to Score</th>
+              {users?.map((u) => (
+                <th key={u}>{u}</th>
+              ))}
+            </tr>
+
+            {rowGuides.map(({ key, title, description, getResult }) => (
+              <tr key={key}>
+                <th>{title}</th>
+                <th className="how-to-score">{description}</th>
+                {/* @ts-ignore */}
+                {users?.map((u, i) => (
+                  <InputCell
+                    value={
+                      // @ts-ignore
+                      key ? game.scores[key][u] : getResult(game.scores, u)
+                    }
+                    setValue={(e) => {
+                      if (!key) return;
+
+                      const tempGame = { ...game };
+                      //   @ts-ignore
+                      tempGame.scores[key][u] = e.target.value;
+                      //@ts-ignore
+                      updateGameData(myGame, tempGame);
+                    }}
+                  />
                 ))}
               </tr>
-
-              {rowGuides.map(({ key, title, description, getResult }) => (
-                <tr key={key}>
-                  <th>{title}</th>
-                  <th className="how-to-score">{description}</th>
-                  {/* @ts-ignore */}
-                  {users?.map((u, i) => (
-                    <InputCell
-                      value={
-                        // @ts-ignore
-                        key ? game.scores[key][u] : getResult(game.scores, u)
-                      }
-                      setValue={(e) => {
-                        if (!key) return;
-
-                        const tempGame = { ...game };
-                        //   @ts-ignore
-                        tempGame.scores[key][u] = e.target.value;
-                        //@ts-ignore
-                        updateGameData(myGame, tempGame);
-                      }}
-                    />
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </Paper>
   );
